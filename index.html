@@ -1,318 +1,732 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wow! Taiwan Business Trip - Itineraries</title>
+    <title>職能培育：Light Up Your Future</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', 'Noto Sans JP', 'Noto Sans KR', sans-serif;
-            background-color: #000000;
-            color: #FFFFFF;
-            scroll-behavior: smooth;
-        }
-        .accent-yellow {
-            color: #ffff00;
-        }
-        .bg-accent-yellow {
-            background-color: #ffff00;
-        }
-        .border-accent-yellow {
-            border-color: #ffff00;
-        }
-        .header-underline {
-            display: inline-block;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        .header-underline::after {
-            content: '';
-            position: absolute;
-            width: 60px;
-            height: 3px;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #ffff00;
-        }
-        .trip-card {
-            background-color: #101010;
-            border: 1px solid #2a2a2a;
-            border-radius: 0.75rem; /* 12px */
-            padding: 1.5rem; /* 24px */
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            display: flex; 
-            flex-direction: column; 
-        }
-        .trip-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(255, 255, 0, 0.15);
-        }
-        .trip-title {
-            font-size: 1.75rem; /* 28px */
-            font-weight: 600;
-        }
-        .trip-details p {
-            color: #b0b0b0;
-            font-size: 0.95rem; /* 15px */
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
-            margin-bottom: 0.25rem; /* 4px */
         }
-        .trip-details strong {
-            color: #FFFFFF;
+        body.light {
+            background-color: #ffffff;
+            color: #333;
         }
-        .itinerary-accordion summary {
-            font-size: 1.125rem; /* 18px */
-            font-weight: 500;
-            padding: 0.75rem 0;
-            cursor: pointer;
-            border-bottom: 1px solid #333333;
-            list-style: none; /* Remove default marker */
+        body.dark {
+            background-color: #111827;
+            color: #f9fafb;
+        }
+        .container {
+            max-width: 400px; /* Much narrower for minimalist design like The Minimalists */
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Ensure all content respects the narrow container */
+        .narrow-content {
+            max-width: 100% !important;
+            margin: 0 auto;
+        }
+        
+        /* Tablet responsive */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 350px;
+                padding: 0 1.5rem;
+            }
+        }
+        
+        /* Mobile responsive - even narrower on small screens */
+        @media (max-width: 640px) {
+            .container {
+                max-width: 300px;
+                padding: 0 1rem;
+            }
+            
+            .section-padding {
+                padding: 4rem 0;
+            }
+            
+            h1 {
+                font-size: 2rem !important;
+            }
+            
+            h2 {
+                font-size: 1.75rem !important;
+            }
+            
+            h3 {
+                font-size: 1.25rem !important;
+            }
+            
+            nav {
+                padding: 2rem 0 !important;
+            }
+            
+            nav .container a:first-child {
+                font-size: 1.5rem !important;
+                margin-bottom: 1.5rem !important;
+            }
+        }
+        
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .container {
+                max-width: 280px;
+                padding: 0 0.75rem;
+            }
+        }
+        .section-padding {
+            padding: 6rem 0; /* Increased vertical spacing for minimalist feel */
+        }
+        .card {
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 3rem;
         }
-        .itinerary-accordion summary::-webkit-details-marker {
-            display: none; /* Hide Safari marker */
+        .light .card {
+            background-color: #fff;
         }
-        .itinerary-accordion summary::after {
-            content: '+'; /* Plus icon */
-            font-size: 1.5rem;
-            color: #ffff00;
-            transition: transform 0.2s ease-in-out;
+        .dark .card {
+            background-color: #1f2937;
         }
-        .itinerary-accordion details[open] summary::after {
-            transform: rotate(45deg); /* Rotate to 'x' */
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        .itinerary-day-content {
-            padding: 1rem 0.5rem;
-            border-bottom: 1px solid #333333;
-            text-align: left; 
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* 增加 padding 過渡 */
+            padding-bottom: 0; /* 初始無下邊距 */
         }
-        .itinerary-day-content:last-child {
-            border-bottom: none;
+        .accordion-content.active {
+            max-height: 500px; /* 足夠大的數值以容納內容 */
+            padding-bottom: 1rem; /* 展開時增加下邊距 */
         }
-        .event-item {
-            display: flex;
-            gap: 1rem; 
-            margin-bottom: 0.75rem; /* Increased margin */
-            font-size: 0.9rem;
-            color: #cccccc;
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4a5568; /* 深灰色按鈕 */
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 9999px;
+            text-align: center;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none; /* 預設隱藏 */
+            z-index: 1000;
+            transition: background-color 0.3s ease;
         }
-        .event-time {
-            color: #ffff00;
-            font-weight: 500;
-            flex-shrink: 0;
-            width: 100px; 
+        .scroll-to-top:hover {
+            background-color: #2d3748; /* 滑鼠懸停時變深 */
         }
-        .event-activity {
-            color: #e0e0e0;
-            word-break: keep-all; 
-            overflow-wrap: break-word; 
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
         }
-        .itinerary-choice {
-            margin-top: 0.75rem;
-            padding-left: 1rem;
-            border-left: 2px solid #ffff00;
+        .chart-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-        .itinerary-choice-option {
-            margin-bottom: 0.5rem;
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        /* Hero Section 動畫效果 */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fadeInDown {
+            animation: fadeInDown 1s ease-out forwards;
+        }
+        .animate-fadeInUp {
+            animation: fadeInUp 1s ease-out forwards;
+            animation-delay: 0.5s; /* 延遲出現 */
+        }
+        .bg-pattern {
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        /* 手機選單開關圖示旋轉 */
+        .mobile-menu-icon-open {
+            transform: rotate(90deg);
         }
     </style>
 </head>
-<body class="antialiased">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 min-h-screen flex flex-col items-center">
+<body class="scroll-smooth light">
+    <!-- 導航菜單 -->
+    <nav class="bg-white py-12 sticky top-0 z-50 border-b border-gray-100">
+        <div class="container text-center">
+            <a href="#" class="text-3xl font-light text-gray-900 mb-8 block">Light Up Your Future</a>
+            <div class="space-y-2">
+                <a href="#hero" class="block text-sm font-light text-gray-600 hover:text-gray-900 transition duration-300">首頁</a>
+                <a href="#core-competencies" class="block text-sm font-light text-gray-600 hover:text-gray-900 transition duration-300">核心職能</a>
+                <a href="#scorecards" class="block text-sm font-light text-gray-600 hover:text-gray-900 transition duration-300">評分卡</a>
+                <a href="#application" class="block text-sm font-light text-gray-600 hover:text-gray-900 transition duration-300">如何運用</a>
+                <a href="#faq" class="block text-sm font-light text-gray-600 hover:text-gray-900 transition duration-300">常見問題</a>
+            </div>
+        </div>
+    </nav>
 
-        <header class="text-center mb-16 md:mb-20">
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3">
-                <span class="accent-yellow">Wow! Taiwan</span> Business Trip
-            </h1>
-            <h2 class="text-2xl sm:text-3xl font-medium text-gray-300 tracking-wide">Curated Itineraries</h2>
-        </header>
+    <!-- 首頁/引言區 (Hero Section) -->
+    <section id="hero" class="bg-white section-padding text-center">
+        <div class="container">
+            <h1 class="text-4xl font-light mb-8 text-gray-900">點亮你的潛力</h1>
+            <p class="text-lg leading-relaxed mb-12 text-gray-600 narrow-content">
+                8張評分卡是為培養員工全面綜合素質所設計的工具，旨在幫助本單位內所有員工，
+                清晰理解自身在各項職能上的表現，進而設定個人職涯成長目標。
+            </p>
+            <a href="#scorecards" class="text-gray-900 hover:text-gray-600 text-sm font-light uppercase tracking-wider border-b border-gray-900 hover:border-gray-600 transition duration-300 inline-block pb-1">
+                探索你的成長雷達
+            </a>
+        </div>
+    </section>
 
-        <section class="mb-16 md:mb-20 w-full max-w-5xl mx-auto text-center">
-            <h3 class="text-2xl lg:text-3xl font-semibold mb-12 accent-yellow header-underline">Explore Your Next Business Opportunity in Taiwan</h3>
-            
-            <div class="md:flex md:gap-12 lg:gap-16 text-center leading-loose text-gray-300">
-                <div class="flex-1 mb-8 md:mb-0">
-                    <p>
-                        We invite esteemed buyers from Southeast Asia, Japan, and Korea to discover Taiwan's vibrant industries.
-                    </p>
+    <!-- 新增的核心職能一覽區塊 -->
+    <section id="core-competencies" class="section-padding bg-gray-50">
+        <div class="container text-center">
+            <h2 class="text-3xl font-light text-gray-900 mb-12">核心職能一覽</h2>
+            <p class="text-lg text-gray-600 mb-16 narrow-content leading-relaxed">
+                我們深信，以下核心職能是您在職涯中持續成長的關鍵
+            </p>
+            <div class="space-y-4 narrow-content">
+                <div class="text-left py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-light text-gray-900">Research</h3>
                 </div>
-                <div class="flex-1">
-                    <p>
-                        Our "Wow! Taiwan Business Trip" series offers tailored itineraries focusing on key sectors, providing invaluable opportunities for 1-on-1 meetings with leading Taiwanese suppliers and insightful company visits.
-                    </p>
+                <div class="text-left py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-light text-gray-900">Engagement</h3>
+                </div>
+                <div class="text-left py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-light text-gray-900">Module</h3>
+                </div>
+                <div class="text-left py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-light text-gray-900">Promotion</h3>
+                </div>
+                <div class="text-left py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-light text-gray-900">交付能力</h3>
+                </div>
+                <div class="text-left py-4">
+                    <h3 class="text-lg font-light text-gray-900">交流能力</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8張職能評分卡詳細介紹區 -->
+    <section id="scorecards" class="section-padding bg-white">
+        <div class="container">
+            <h2 class="text-3xl font-light text-center mb-16 text-gray-900">你的八張成長雷達圖</h2>
+            <div class="space-y-12">
+                <!-- 評分卡 1：任務達人卡 -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">任務達人卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">專注於員工獨立完成工作任務的效率和品質。</p>
+                    <div class="accordion-content" id="card-1-content">
+                        <div class="text-sm text-gray-600 mb-4 space-y-2">
+                            <p>• 能準時或提前完成指派任務，並達到預期品質。</p>
+                            <p>• 在任務執行過程中，能展現問題解決能力。</p>
+                            <p>• 能夠有效地規劃和組織工作流程。</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-1-content', this)" aria-expanded="false" aria-controls="card-1-content">了解更多</button>
+                </div>
+
+                <!-- 評分卡 2：溝通表達卡 -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">溝通表達卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">評估員工在口頭和書面溝通，特別是簡報方面的能力。</p>
+                    <div class="accordion-content" id="card-2-content">
+                        <div class="text-sm text-gray-600 mb-4 space-y-2">
+                            <p>• 能清晰、有條理地表達想法，讓聽眾容易理解。</p>
+                            <p>• 能根據不同對象（上司、客戶）調整溝通方式。</p>
+                            <p>• 簡報內容結構完整，視覺呈現專業，且能有效掌握時間。</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-2-content', this)" aria-expanded="false" aria-controls="card-2-content">了解更多</button>
+                </div>
+
+                <!-- 評分卡 3：思辨探索卡 -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">思辨探索卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">衡量員工在資訊收集、分析和提出獨立見解方面的能力。</p>
+                    <div class="accordion-content" id="card-3-content">
+                        <div class="text-sm text-gray-600 mb-4 space-y-2">
+                            <p>• 能主動收集相關資訊，並進行有效分析。</p>
+                            <p>• 能從不同角度思考問題，提出建設性意見。</p>
+                            <p>• 對資訊來源保持質疑，不盲目接受。</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-3-content', this)" aria-expanded="false" aria-controls="card-3-content">了解更多</button>
+                </div>
+
+                <!-- 評分卡 4：協作先鋒卡 -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">協作先鋒卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">評估員工在團隊合作中的貢獻、溝通效率和協調能力。</p>
+                    <div class="accordion-content" id="card-4-content">
+                        <div class="text-sm text-gray-600 mb-4 space-y-2">
+                            <p>• 能積極參與團隊討論，貢獻自己的想法。</p>
+                            <p>• 能有效與團隊成員及合作單位溝通，減少誤解。</p>
+                            <p>• 在團隊中展現合作精神，並願意協助他人。</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-4-content', this)" aria-expanded="false" aria-controls="card-4-content">了解更多</button>
+                </div>
+
+                <!-- 評分卡 5：創意提案卡 -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">創意提案卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">著重於員工將工作經驗轉化為創新點子並形成具體提案的能力。</p>
+                    <div class="accordion-content" id="card-5-content">
+                        <div class="text-sm text-gray-600 mb-4 space-y-2">
+                            <p>• 能從日常工作中發現問題或優化機會，並提出解決方案。</p>
+                            <p>• 提出的提案具有新穎性和可行性，並能清晰闡述其價值。</p>
+                            <p>• 能有效地整合資源，將概念轉化為具體的提案內容。</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-5-content', this)" aria-expanded="false" aria-controls="card-5-content">了解更多</button>
+                </div>
+
+                <!-- 評分卡 6：應變控場卡 -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">應變控場卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">評估員工在活動籌備、執行和突發狀況處理上的表現。</p>
+                    <div class="accordion-content" id="card-6-content">
+                        <ul class="list-disc list-inside text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+                            <li>能周全地規劃活動細節，並有效執行。</li>
+                            <li>在活動過程中能靈活應對突發狀況，迅速做出判斷。</li>
+                            <li>能有效控制場面氛圍，確保活動順利進行。</li>
+                        </ul>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-6-content', this)" aria-expanded="false" aria-controls="card-6-content">了解更多</button>
+                </div>
+
+                <!-- 評分卡 7：學習成長卡 -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">學習成長卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">評估員工在職能培育過程中的學習態度、進步幅度與自我提升意識。</p>
+                    <div class="accordion-content" id="card-7-content">
+                        <div class="text-sm text-gray-600 mb-4 space-y-2">
+                            <p>• 能積極參與培訓課程，並將所學應用於工作中。</p>
+                            <p>• 能主動尋求回饋，並針對不足之處進行改進。</p>
+                            <p>• 對新知識和新技能保持開放態度，展現持續學習的意願。</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-7-content', this)" aria-expanded="false" aria-controls="card-7-content">了解更多</button>
+                </div>
+
+                <!-- 評分卡 8：影響力塑造卡 -->
+                <div class="pb-8">
+                    <h3 class="text-xl font-light text-gray-900 mb-4">影響力塑造卡</h3>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">衡量員工綜合運用各項能力，在工作中產生正面影響力。</p>
+                    <div class="accordion-content" id="card-8-content">
+                        <div class="text-sm text-gray-600 mb-4 space-y-2">
+                            <p>• 能將多項職能融會貫通，解決複雜問題。</p>
+                            <p>• 其工作成果能為團隊或單位帶來顯著效益。</p>
+                            <p>• 能在日常工作中展現積極態度，影響並帶動身邊的同事。</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">評分機制建議：1-5分量表（1分：需大幅提升；5分：表現卓越）</p>
+                    </div>
+                    <button class="toggle-button text-gray-600 hover:text-gray-900 text-sm font-light transition duration-300" onclick="toggleAccordion('card-8-content', this)" aria-expanded="false" aria-controls="card-8-content">了解更多</button>
                 </div>
             </div>
 
-            <p class="text-sm text-gray-400 mt-16">
-                Below are the upcoming trips. Click on each day to view the detailed schedule.
-            </p>
-        </section>
-
-        <main id="itineraryContainer" class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-            <!-- Itineraries will be injected here by JavaScript -->
-        </main>
-
-        <footer class="text-center mt-16 md:mt-24 py-10">
-            <p class="text-gray-500 text-sm tracking-wider">&copy; <script>document.write(new Date().getFullYear())</script> Wow! Taiwan Project. All Rights Reserved.</p>
-        </footer>
-    </div>
-
-    <script>
-        const tripsData = [
-            {
-                theme: "Circular Renewable",
-                dates: "July 15 – July 18, 2025",
-                buyers: "Malaysia / Thailand",
-                hotel: "Millennium Hotel Taichung (台中日月千禧酒店)",
-                itinerary: [
-                    { dateDisplay: "July 15 (Day 1)", events: [ { time: "12:00-16:00", activity: "Arrival" }, { time: "18:00-21:00", activity: "Welcome Dinner" } ] },
-                    { dateDisplay: "July 16 (Day 2)", events: [
-                        { time: "10:00-12:00", activity: "Courtesy visits: Plastics Industry Development Center (塑膠中心)" },
-                        { time: "12:00-14:00", activity: "Lunch" },
-                        { time: "14:00-15:30", activity: "Smart Manufacturing of Circular Materials: Victor Taichung Machinery Works Co., Ltd. (台中精機)" },
-                        { time: "16:00-17:30", activity: "Choose A or B itinerary based on procurement sectors:<div class='itinerary-choice'><div class='itinerary-choice-option'><strong>A:</strong> Circular Materials Production: Pontex Polyblend Co., Ltd. (邦泰複合材料)</div><div class='itinerary-choice-option'><strong>B:</strong> Energy-Saving Processing Equipment for Plastics: Chumpower Machinery Corp. (銓寶工業)</div></div>" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                      ]
-                    },
-                    { dateDisplay: "July 17 (Day 3)", events: [
-                        { time: "09:00-17:00", activity: "All Day 1v1 Business Match Meetings with Taiwan Suppliers" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                      ]
-                    },
-                    { dateDisplay: "July 18 (Day 4)", events: [ { time: "10:00-12:00", activity: "Departure" } ] }
-                ]
-            },
-            {
-                theme: "Smart Community",
-                dates: "July 29 - August 01, 2025",
-                buyers: "Malaysia / Philippine",
-                hotel: "The Place Taipei (南港老爺行旅)",
-                itinerary: [
-                    { dateDisplay: "July 29 (Day 1)", events: [ { time: "12:00-16:00", activity: "Arrival" }, { time: "18:00-21:00", activity: "Welcome Dinner" } ] },
-                    { dateDisplay: "July 30 (Day 2)", events: [
-                        { time: "10:00-12:00", activity: "Courtesy visits: Fubon Xinyi A25 Headquarters (富邦信義A25園區)" },
-                        { time: "12:00-14:00", activity: "Lunch" },
-                        { time: "14:00-15:30", activity: "Smart Community: Kuang Tzu Po Ai Public House Development Project (廣慈博愛園區社會住宅)"},
-                        { time: "16:00-17:30", activity: "Choose A or B itinerary based on procurement sectors:<div class='itinerary-choice'><div class='itinerary-choice-option'><strong>A:</strong> Smart Home: Advantech AIoT Co-Creation Campus (研華林口智慧科技園區)</div><div class='itinerary-choice-option'><strong>B:</strong> Smart Office: Taiwan Startup Terrace (林口新創園區實證場域)</div></div>" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                    ]},
-                    { dateDisplay: "July 31 (Day 3)", events: [
-                        { time: "09:00-17:00", activity: "All Day 1v1 Business Match Meetings with Taiwan Suppliers" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                    ]},
-                    { dateDisplay: "Aug 01 (Day 4)", events: [ { time: "10:00-12:00", activity: "Departure" } ] }
-                ]
-            },
-            {
-                theme: "Sports & Health",
-                dates: "August 19 - August 22, 2025",
-                buyers: "Japan / Philippine",
-                hotel: "Millennium Hotel Taichung (台中日月千禧酒店)",
-                itinerary: [
-                    { dateDisplay: "Aug 19 (Day 1)", events: [ { time: "12:00-16:00", activity: "Arrival" } ] },
-                    { dateDisplay: "Aug 20 (Day 2)", events: [
-                        { time: "10:00-12:00", activity: "Age-Friendly Fitness Solutions: Gee Hoo Fitec Corp. ft. Starbia Meditek Co. Ltd (基赫科技 ft. 興友科技)" },
-                        { time: "12:00-14:00", activity: "Lunch" },
-                        { time: "14:00-17:30", activity: "Choose A or B itinerary based on procurement sectors:<div class='itinerary-choice'><div class='itinerary-choice-option'><strong>A:</strong> Sports and Fitness Equipment: Dyaco International Inc. (岱宇國際)</div><div class='itinerary-choice-option'><strong>B:</strong> Sports Accessories: Gallant Industries ft. Sz Jie Li Enterprise Co. Ltd. (祥記實業 ft. 斯傑利企業有限公司)</div></div>" },
-                        { time: "18:00-21:00", activity: "Welcome Dinner" }
-                    ]},{ dateDisplay: "Aug 21 (Day 3)", events: [
-                        { time: "09:00-17:00", activity: "All Day 1v1 Business Match Meetings with Taiwan Suppliers" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                    ]},{ dateDisplay: "Aug 22 (Day 4)", events: [ { time: "10:00-12:00", activity: "Departure" } ] }
-                ]
-            },
-            {
-                theme: "Beauty & Personal Care",
-                dates: "August 26 - August 29, 2025",
-                buyers: "Korea / Vietnam",
-                hotel: "The Place Taipei (南港老爺行旅)",
-                itinerary: [
-                    { dateDisplay: "Aug 26 (Day 1)", events: [ { time: "12:00-16:00", activity: "Arrival" }, { time: "18:00-21:00", activity: "Welcome Dinner" } ] },
-                    { dateDisplay: "Aug 27 (Day 2)", events: [
-                        { time: "10:00-12:00", activity: "Choose A or B itinerary based on procurement sectors:<div class='itinerary-choice'><div class='itinerary-choice-option'><strong>A:</strong> Extracellular Vesicle Innovation Technology and Beauty Applications: BIONET Therapeutics Corp (訊聯生技)</div><div class='itinerary-choice-option'><strong>B:</strong> Health Supplements R&D and Manufacturing: Grape King Bio Ltd (葡萄王生物科技研究所)</div></div>" },
-                        { time: "12:00-14:00", activity: "Lunch" },
-                        { time: "14:00-17:30", activity: "Choose A or B itinerary based on procurement sectors:<div class='itinerary-choice'><div class='itinerary-choice-option'><strong>A:</strong> AI Hair and Scalp Diagnosis and Beauty Care Experience: MacroHi Ltd (美科實業)</div><div class='itinerary-choice-option'><strong>B:</strong> Traditional Chinese Medicine Health Drinks: Biozyme Biotechnology Corp. (大漢酵素)</div></div>" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                    ]},
-                    { dateDisplay: "Aug 28 (Day 3)", events: [
-                        { time: "09:00-17:00", activity: "All Day 1v1 Business Match Meetings with Taiwan Suppliers" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                    ]},
-                    { dateDisplay: "Aug 29 (Day 4)", events: [ { time: "10:00-12:00", activity: "Departure" } ] }
-                ]
-            },
-            {
-                theme: "Health Tech",
-                dates: "September 16 - September 19, 2025",
-                buyers: "Thailand / Vietnam",
-                hotel: "The Place Taipei (南港老爺行旅)",
-                itinerary: [
-                    { dateDisplay: "Sep 16 (Day 1)", events: [ { time: "12:00-16:00", activity: "Arrival" }, { time: "18:00-21:00", activity: "Welcome Dinner" } ] },
-                    { dateDisplay: "Sep 17 (Day 2)", events: [
-                        { time: "10:00-12:00", activity: "Courtesy visits: Biotechnology & Pharmaceutical Industries Promotion Office (經濟部生技醫藥產業發展推動小組)" },
-                        { time: "12:00-14:00", activity: "Lunch" },
-                        { time: "14:00-15:30", activity: "Telemedicine and Smart Healthcare: Imedtac Co., Ltd. (慧誠智醫)" },
-                        { time: "16:00-17:30", activity: "Choose A or B itinerary based on procurement sectors:<div class='itinerary-choice'><div class='itinerary-choice-option'><strong>A:</strong> Smart Healthcare: Advantech AIoT Co-Creation Campus (研華AIoT智能共創園區)</div><div class='itinerary-choice-option'><strong>B:</strong> Smart Rehabiliation: Netown Corp. (真茂科技健康體驗館)</div></div>" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                    ]},
-                    { dateDisplay: "Sep 18 (Day 3)", events: [
-                        { time: "09:00-17:00", activity: "All Day 1v1 Business Match Meetings with Taiwan Suppliers" },
-                        { time: "18:00-21:00", activity: "Back to Hotel (Free Activities)" }
-                    ]},
-                    { dateDisplay: "Sep 19 (Day 4)", events: [ { time: "10:00-12:00", activity: "Departure" } ] }
-                ]
-            }
-        ];
-
-        const itineraryContainer = document.getElementById('itineraryContainer');
-
-        tripsData.forEach(trip => {
-            const tripCard = document.createElement('div');
-            tripCard.className = 'trip-card'; 
-
-            let itineraryHtml = '';
-            trip.itinerary.forEach(day => {
-                let eventsHtml = '';
-                day.events.forEach(event => {
-                    eventsHtml += `
-                        <div class="event-item">
-                            <span class="event-time">${event.time}</span>
-                            <span class="event-activity">${event.activity}</span>
-                        </div>
-                    `;
-                });
-
-                itineraryHtml += `
-                    <details class="itinerary-accordion">
-                        <summary>${day.dateDisplay}</summary>
-                        <div class="itinerary-day-content">
-                            ${eventsHtml}
-                        </div>
-                    </details>
-                `;
-            });
-
-            tripCard.innerHTML = `
-                <div class="flex-grow">
-                    <h3 class="trip-title accent-yellow mb-2 text-left">${trip.theme}</h3>
-                    <div class="trip-details mb-4 text-left">
-                        <p><strong>Dates:</strong> ${trip.dates}</p>
-                        <p><strong>Target Buyers:</strong> ${trip.buyers}</p>
-                        <p><strong>Hotel:</strong> ${trip.hotel}</p>
+            <!-- 自我評估模擬器 -->
+            <div class="mt-20 border-t border-gray-200 pt-16">
+                <h3 class="text-2xl font-light text-center text-gray-900 mb-12">自我評估模擬器</h3>
+                <p class="text-base text-center text-gray-600 mb-12 narrow-content leading-relaxed">請為以下八項職能輸入您的評分（1-5分）</p>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                        <label for="score-1" class="text-sm font-light text-gray-900">任務達人卡</label>
+                        <input type="number" id="score-1" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
                     </div>
-                    <div>
-                        ${itineraryHtml}
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                        <label for="score-2" class="text-sm font-light text-gray-900">溝通表達卡</label>
+                        <input type="number" id="score-2" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                        <label for="score-3" class="text-sm font-light text-gray-900">思辨探索卡</label>
+                        <input type="number" id="score-3" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                        <label for="score-4" class="text-sm font-light text-gray-900">協作先鋒卡</label>
+                        <input type="number" id="score-4" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                        <label for="score-5" class="text-sm font-light text-gray-900">創意提案卡</label>
+                        <input type="number" id="score-5" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                        <label for="score-6" class="text-sm font-light text-gray-900">應變控場卡</label>
+                        <input type="number" id="score-6" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                        <label for="score-7" class="text-sm font-light text-gray-900">學習成長卡</label>
+                        <input type="number" id="score-7" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label for="score-8" class="text-sm font-light text-gray-900">影響力塑造卡</label>
+                        <input type="number" id="score-8" min="1" max="5" value="3" class="w-16 p-1 border border-gray-300 text-center text-sm focus:outline-none focus:border-gray-500">
                     </div>
                 </div>
-            `;
-            itineraryContainer.appendChild(tripCard);
-        });
-    </script>
+                <button onclick="generateRadarChart()" class="mt-12 w-full text-gray-900 hover:text-gray-600 py-3 text-sm font-light uppercase tracking-wider border-b border-gray-900 hover:border-gray-600 transition duration-300">
+                    生成我的成長雷達圖
+                </button>
+                <div class="mt-8 chart-container">
+                    <canvas id="radarChart" class="chart-canvas"></canvas>
+                </div>
+                <p id="chart-message" class="text-center text-red-500 mt-4 hidden">請輸入分數後生成雷達圖。</p>
+            </div>
+        </div>
+    </section>
 
+    <!-- 如何運用評分卡區 -->
+    <section id="application" class="section-padding bg-gray-50">
+        <div class="container">
+            <h2 class="text-3xl font-light text-center mb-16 text-gray-900">啟動你的成長引擎</h2>
+            <div class="space-y-12 narrow-content">
+                <div class="text-center pb-8 border-b border-gray-200">
+                    <h3 class="text-xl font-light mb-4 text-gray-900">1. 自我評估與反思</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">鼓勵員工定期根據評分卡標準進行自我評估，誠實面對優勢與待改進之處。</p>
+                </div>
+                <div class="text-center pb-8 border-b border-gray-200">
+                    <h3 class="text-xl font-light mb-4 text-gray-900">2. 與主管對話</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">強調與主管進行績效面談和回饋的重要性，共同討論評估結果與未來發展方向。</p>
+                </div>
+                <div class="text-center pb-8 border-b border-gray-200">
+                    <h3 class="text-xl font-light mb-4 text-gray-900">3. 設定 SMART 目標</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">指導員工如何根據評分結果設定 SMART 職涯成長目標。</p>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-xl font-light mb-4 text-gray-900">4. 制定個人發展計畫 (IDP)</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">強調評分卡是員工制定個人發展計畫 (IDP) 的基礎，協助規劃成長路徑。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 培育與晉升機會區 (內容已全部移除，且不再於導航中顯示) -->
+    <section id="opportunities" class="section-padding bg-gray-100">
+        <div class="container">
+            <!-- 根據使用者要求，此區塊標題及內容已全部移除 -->
+            <h2 class="sr-only">培育與晉升機會</h2> <!-- 螢幕閱讀器可讀，但視覺上隱藏 -->
+        </div>
+    </section>
+
+    <!-- 常見問題 (FAQ) 與聯絡我們區 -->
+    <section id="faq" class="section-padding bg-white">
+        <div class="container">
+            <h2 class="text-3xl font-light text-center mb-16 text-gray-900">常見問題</h2>
+            <div class="narrow-content space-y-8">
+                <!-- FAQ Item 1 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <button class="flex justify-between items-center w-full text-left text-lg font-light text-gray-900" onclick="toggleAccordion('faq-1-content', this)" aria-expanded="false" aria-controls="faq-1-content">
+                        評分多久進行一次？
+                        <svg class="w-5 h-5 transform transition-transform duration-300" id="faq-1-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content mt-4" id="faq-1-content">
+                        <p class="text-base text-gray-600 leading-relaxed">一般來說，我們會建議您與主管每年至少進行一次正式的職能評估與回饋，但您隨時都可以進行自我評估與反思。</p>
+                    </div>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <button class="flex justify-between items-center w-full text-left text-lg font-light text-gray-900" onclick="toggleAccordion('faq-2-content', this)" aria-expanded="false" aria-controls="faq-2-content">
+                        我該如何提出關於評分卡的問題？
+                        <svg class="w-5 h-5 transform transition-transform duration-300" id="faq-2-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content mt-4" id="faq-2-content">
+                        <p class="text-base text-gray-600 leading-relaxed">您可直接與您的直屬主管聯繫，他會很樂意為您解答任何疑問。</p>
+                    </div>
+                </div>
+                <!-- FAQ Item 3 -->
+                <div>
+                    <button class="flex justify-between items-center w-full text-left text-lg font-light text-gray-900" onclick="toggleAccordion('faq-3-content', this)" aria-expanded="false" aria-controls="faq-3-content">
+                        評分結果會影響我的薪資或績效嗎？
+                        <svg class="w-5 h-5 transform transition-transform duration-300" id="faq-3-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content mt-4" id="faq-3-content">
+                        <p class="text-base text-gray-600 leading-relaxed">評分卡的主要目的是促進個人成長與發展。其結果會作為職涯規劃和培育資源分配的重要參考，並與績效評估體系連結，但薪資調整會有更全面的評估機制。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="bg-gray-50 text-gray-600 py-16 text-center border-t border-gray-200">
+        <div class="container">
+            <p class="text-sm font-light">&copy; 2025 商研院行銷所 職能培育平台</p>
+            <p class="text-sm mt-2 font-light">共同成長，點亮未來</p>
+        </div>
+    </footer>
+
+    <!-- 回到頂部按鈕 -->
+    <button class="scroll-to-top" onclick="scrollToTop()">回到頂部</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script>
+        // Dark mode toggle
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.classList.contains('dark');
+            
+            if (isDark) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.classList.remove('light', 'dark');
+            document.body.classList.add(savedTheme);
+            
+            // Add theme toggle event listener
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+        });
+
+        // 展開/收合卡片詳細內容或FAQ
+        function toggleAccordion(id, clickedButton) {
+            const content = document.getElementById(id);
+            const isFaq = id.includes('faq');
+
+            // Find the element that needs visual transformation (SVG for FAQ, button text for cards)
+            const visualElement = isFaq ? clickedButton.querySelector('svg') : clickedButton;
+
+            if (!content || !clickedButton || !visualElement) {
+                console.error('Accordion elements not found for ID:', id);
+                return;
+            }
+
+            const isCurrentlyActive = content.classList.contains('active');
+
+            // Close all other active accordions in the same section
+            const parentSection = content.closest('section');
+            if (parentSection) {
+                const activeContents = parentSection.querySelectorAll('.accordion-content.active');
+                activeContents.forEach(activeContent => {
+                    if (activeContent.id !== id) { // Only close others
+                        activeContent.classList.remove('active');
+                        let otherButton = null;
+
+                        // Determine the associated button for the 'other' activeContent
+                        if (activeContent.parentElement && activeContent.parentElement.classList.contains('card')) { // It's a scorecard card
+                            otherButton = activeContent.parentElement.querySelector('.toggle-button');
+                        } else if (activeContent.previousElementSibling && activeContent.previousElementSibling.tagName === 'BUTTON') { // It's an FAQ button
+                             otherButton = activeContent.previousElementSibling;
+                        }
+
+                        if (otherButton) {
+                            const otherIsFaq = activeContent.id.includes('faq');
+                            if (otherIsFaq) {
+                                const otherFaqIcon = otherButton.querySelector('svg');
+                                if (otherFaqIcon) {
+                                    otherFaqIcon.style.transform = 'rotate(0deg)';
+                                }
+                            } else {
+                                otherButton.textContent = '了解更多';
+                            }
+                            otherButton.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            }
+
+            // Toggle the current accordion
+            if (isCurrentlyActive) {
+                content.classList.remove('active');
+                if (isFaq) {
+                    visualElement.style.transform = 'rotate(0deg)';
+                } else {
+                    visualElement.textContent = '了解更多';
+                }
+                clickedButton.setAttribute('aria-expanded', 'false');
+            } else {
+                content.classList.add('active');
+                if (isFaq) {
+                    visualElement.style.transform = 'rotate(180deg)';
+                } else {
+                    visualElement.textContent = '收起';
+                }
+                clickedButton.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+
+        // 回到頂部按鈕顯示/隱藏
+        window.onscroll = function() {
+            const scrollTopButton = document.querySelector('.scroll-to-top');
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                scrollTopButton.style.display = 'block';
+            } else {
+                scrollTopButton.style.display = 'none';
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 雷達圖繪製
+        let radarChart = null; // 儲存圖表實例
+
+        function generateRadarChart() {
+            const scores = [];
+            const labels = [
+                '任務達人卡', '溝通表達卡', '思辨探索卡', '協作先鋒卡',
+                '創意提案卡', '應變控場卡', '學習成長卡', '影響力塑造卡'
+            ];
+
+            for (let i = 1; i <= 8; i++) {
+                const inputElement = document.getElementById(`score-${i}`);
+                const score = parseInt(inputElement.value);
+
+                if (isNaN(score) || score < 1 || score > 5) {
+                    document.getElementById('chart-message').textContent = '請輸入所有職能的有效分數 (1-5分)。';
+                    document.getElementById('chart-message').classList.remove('hidden');
+                    if (radarChart) {
+                        radarChart.destroy(); // 銷毀舊圖表
+                        radarChart = null;
+                    }
+                    return; // 終止函數執行
+                }
+                scores.push(score);
+            }
+
+            document.getElementById('chart-message').classList.add('hidden'); // 隱藏錯誤訊息
+
+            const ctx = document.getElementById('radarChart').getContext('2d');
+
+            if (radarChart) {
+                radarChart.destroy(); // 如果圖表已存在，先銷毀它
+            }
+
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '我的職能分數',
+                        data: scores,
+                        backgroundColor: 'rgba(59, 130, 246, 0.4)', /* 藍色，更具活力 */
+                        borderColor: 'rgba(29, 78, 216, 1)', /* 深藍色邊框 */
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(29, 78, 216, 1)', /* 深藍色點 */
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(29, 78, 216, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: window.innerWidth < 640 ? 10 : 12,
+                                    weight: 'bold'
+                                },
+                                color: document.body.classList.contains('dark') ? '#f9fafb' : '#333'
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                max: 5,
+                                min: 0,
+                                stepSize: 1,
+                                display: false // 隱藏刻度數字
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: document.body.classList.contains('dark') ? '#f9fafb' : '#333',
+                                font: {
+                                    size: window.innerWidth < 640 ? 12 : 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '分';
+                                }
+                            }
+                        },
+                        datalabels: { // 使用 datalabels 插件顯示分數
+                            display: true,
+                            color: '#333',
+                            font: {
+                                weight: 'bold',
+                                size: 14
+                            },
+                            formatter: function(value, context) {
+                                return value;
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels] // 註冊 datalabels 插件
+            });
+        }
+    </script>
 </body>
 </html>
